@@ -1,4 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ipfgold</string>
+    <string name="app_name">IPF Gold</string>
+
+    <!-- Navegación -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_settings">Configuración</string>
+    <string name="nav_about">Acerca de</string>
+
+    <!-- Home -->
+    <string name="home_price_card_title">Precio del oro</string>
+    <string name="home_price_card_subtitle">Última actualización</string>
+    <string name="home_period_1d">1D</string>
+    <string name="home_period_1w">1W</string>
+    <string name="home_period_1m">1M</string>
+    <string name="home_period_1y">1Y</string>
+    <string name="home_period_all">Todo</string>
+    <string name="home_currency_toggle_usd">USD</string>
+    <string name="home_currency_toggle_eur">EUR</string>
+    <string name="home_offline_banner">Modo offline – datos de caché</string>
+    <string name="home_error_retry">Reintentar</string>
+    <string name="home_pull_to_refresh">Actualizar</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Configuración</string>
+    <string name="settings_currency_title">Moneda de visualización</string>
+    <string name="settings_currency_usd">Dólar estadounidense (USD)</string>
+    <string name="settings_currency_eur">Euro (EUR)</string>
+    <string name="settings_period_title">Período predeterminado del gráfico</string>
+    <string name="settings_theme_title">Tema</string>
+    <string name="settings_theme_system">Sistema</string>
+    <string name="settings_theme_light">Claro</string>
+    <string name="settings_theme_dark">Oscuro</string>
+    <string name="settings_refresh_interval_title">Intervalo de actualización</string>
+    <string name="settings_refresh_interval_5m">5 minutos</string>
+    <string name="settings_refresh_interval_15m">15 minutos</string>
+    <string name="settings_refresh_interval_30m">30 minutos</string>
+    <string name="settings_refresh_interval_1h">1 hora</string>
+
+    <!-- About -->
+    <string name="about_title">Acerca de</string>
+    <string name="about_version">Versión %s</string>
+    <string name="about_data_source">Los datos se obtienen de Alpha Vantage y son orientativos.</string>
+    <string name="about_credits">Desarrollado por IPF con ❤️ y 🦞.</string>
 </resources>
