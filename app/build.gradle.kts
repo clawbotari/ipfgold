@@ -18,6 +18,10 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        // API key de Alpha Vantage (secrets‑gradle‑plugin)
+        val apiKey = project.findProperty("ALPHA_VANTAGE_API_KEY") as? String ?: ""
+        buildConfigField("String", "ALPHA_VANTAGE_API_KEY", "\"$apiKey\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -42,6 +46,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.6.0"
@@ -50,6 +55,13 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+
+    secrets {
+        propertiesFileName = "secrets.properties"
+        defaultPropertiesFileName = "secrets.defaults.properties"
+        // Claves que no deben ser expuestas (ninguna en este caso)
+        ignoreList.add("sdk.*")
     }
 }
 
