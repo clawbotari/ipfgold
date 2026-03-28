@@ -1,9 +1,9 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.hilt.android)
-    alias(libs.plugins.secrets)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.kapt")
+    id("com.google.dagger.hilt.android")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -54,59 +54,59 @@ android {
 
 dependencies {
     // Compose BOM
-    implementation(platform(libs.compose.bom))
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.material3)
-    implementation(libs.compose.navigation)
+    implementation(platform("androidx.compose:compose-bom:2025.12.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui".graphics)
+    implementation("androidx.compose.ui:ui".tooling.preview)
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.navigation:navigation-compose:2.8.0")
 
     // Lifecycle
-    implementation(libs.lifecycle.viewmodel.compose)
-    implementation(libs.lifecycle.viewmodel.ktx)
-    implementation(libs.lifecycle.runtime.compose)
-    implementation(libs.lifecycle.runtime.ktx)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
 
     // Hilt
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
+    implementation("com.google.dagger:hilt-android:2.51")
+    kapt("com.google.dagger:hilt-compiler:2.51")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Room
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    kapt(libs.room.compiler)
+    implementation("androidx.room:room-runtime:2.7.0")
+    implementation("androidx.room:room-ktx:2.7.0")
+    kapt("androidx.room:room-compiler:2.7.0")
 
     // DataStore
-    implementation(libs.datastore.preferences)
+    implementation("androidx.datastore:datastore-preferences:1.1.0")
 
     // Networking
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.moshi)
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging.interceptor)
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
-    kapt(libs.moshi.kotlin.codegen)
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0".converter.moshi)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0".logging.interceptor)
+    implementation("com.squareup.moshi:moshi:1.15.1")
+    implementation("com.squareup.moshi:moshi:1.15.1".kotlin)
+    kapt("com.squareup.moshi:moshi:1.15.1".kotlin.codegen)
 
     // Charts (Vico)
-    implementation(libs.vico.core)
-    implementation(libs.vico.compose)
-    implementation(libs.vico.compose.m3)
+    implementation("com.patrykandpatrick.vico:core:1.13.0")
+    implementation("com.patrykandpatrick.vico:compose:1.13.0")
+    implementation("com.patrykandpatrick.vico:compose:1.13.0".m3)
 
     // Image loading
-    implementation(libs.coil.compose)
+    implementation("io.coil-kt:coil-compose:3.0.0")
 
     // Logging
-    implementation(libs.timber)
+    implementation("com.jakewharton.timber:timber:5.0.1")
 
     // Testing
-    testImplementation(libs.junit5)
-    testImplementation(libs.mockk)
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    testImplementation("io.mockk:mockk:1.13.10")
     androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.compose.ui.test.junit4)
-    androidTestImplementation(libs.mockk.android)
-    androidTestImplementation(libs.espresso.core)
-    debugImplementation(libs.compose.ui.tooling)
-    debugImplementation(libs.compose.ui.test.manifest)
+    androidTestImplementation("androidx.compose.ui:ui".test.junit4)
+    androidTestImplementation("io.mockk:mockk:1.13.10".android)
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    debugImplementation("androidx.compose.ui:ui".tooling)
+    debugImplementation("androidx.compose.ui:ui".test.manifest)
 }
