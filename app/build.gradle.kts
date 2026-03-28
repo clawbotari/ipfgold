@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
     id("org.jetbrains.kotlin.kapt")
     id("com.google.dagger.hilt.android")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
@@ -43,7 +44,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.12"
+        kotlinCompilerExtensionVersion = "1.6.0"
     }
     packaging {
         resources {
@@ -54,12 +55,17 @@ android {
 
 dependencies {
     // Compose BOM
-    implementation(platform("androidx.compose:compose-bom:2025.12.00"))
+    val composeBom = platform("androidx.compose:compose-bom:2025.12.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
+    // Compose UI
     implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui".graphics)
-    implementation("androidx.compose.ui:ui".tooling.preview)
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-compose:2.8.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.21")
 
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
@@ -82,20 +88,23 @@ dependencies {
 
     // Networking
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:retrofit:2.11.0".converter.moshi)
+    implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0".logging.interceptor)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.squareup.moshi:moshi:1.15.1")
-    implementation("com.squareup.moshi:moshi:1.15.1".kotlin)
-    kapt("com.squareup.moshi:moshi:1.15.1".kotlin.codegen)
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.1")
 
     // Charts (Vico)
     implementation("com.patrykandpatrick.vico:core:1.13.0")
     implementation("com.patrykandpatrick.vico:compose:1.13.0")
-    implementation("com.patrykandpatrick.vico:compose:1.13.0".m3)
+    implementation("com.patrykandpatrick.vico:compose-m3:1.13.0")
 
     // Image loading
-    implementation("io.coil-kt:coil-compose:3.0.0")
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // Material Components for XML themes
+    implementation("com.google.android.material:material:1.11.0")
 
     // Logging
     implementation("com.jakewharton.timber:timber:5.0.1")
@@ -103,10 +112,19 @@ dependencies {
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
     testImplementation("io.mockk:mockk:1.13.10")
-    androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation("androidx.compose.ui:ui".test.junit4)
-    androidTestImplementation("io.mockk:mockk:1.13.10".android)
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    androidTestImplementation("io.mockk:mockk-android:1.13.10")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    debugImplementation("androidx.compose.ui:ui".tooling)
-    debugImplementation("androidx.compose.ui:ui".test.manifest)
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+}
+
+configurations.all {
+    resolutionStrategy {
+        eachDependency {
+            if (requested.group == "org.jetbrains.kotlin") {
+                useVersion("2.0.21")
+            }
+        }
+    }
 }

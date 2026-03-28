@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Ipfgold" parent="android:Theme.Material3.Light.NoActionBar">
+    <style name="Theme.Ipfgold" parent="Theme.MaterialComponents">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/gold_primary</item>
         <item name="colorPrimaryVariant">@color/gold_secondary</item>
@@ -13,7 +13,7 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
-    <style name="Theme.Ipfgold.Dark" parent="android:Theme.Material3.Dark.NoActionBar">
+    <style name="Theme.Ipfgold.Dark" parent="Theme.MaterialComponents">
         <item name="colorPrimary">@color/gold_primary</item>
         <item name="colorPrimaryVariant">@color/gold_secondary</item>
         <item name="colorOnPrimary">@color/surface</item>
