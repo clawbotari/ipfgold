@@ -4,7 +4,6 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
     id("org.jetbrains.kotlin.kapt")
     id("com.google.dagger.hilt.android")
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -18,8 +17,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        // API key de Alpha Vantage (secrets‑gradle‑plugin)
-        val apiKey = project.findProperty("ALPHA_VANTAGE_API_KEY") as? String ?: ""
+        // API key de Alpha Vantage (usa gradle.properties o variable de entorno)
+        val apiKey = project.findProperty("ALPHA_VANTAGE_API_KEY") as? String ?: "demo"
         buildConfigField("String", "ALPHA_VANTAGE_API_KEY", "\"$apiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -56,13 +55,6 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
-    secrets {
-        propertiesFileName = "secrets.properties"
-        defaultPropertiesFileName = "secrets.defaults.properties"
-        // Claves que no deben ser expuestas (ninguna en este caso)
-        ignoreList.add("sdk.*")
-    }
 }
 
 dependencies {
@@ -76,6 +68,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.navigation:navigation-compose:2.8.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.21")
 

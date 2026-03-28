@@ -39,10 +39,10 @@ import com.ipfgold.ui.theme.IpfGoldTheme
 fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val currency by viewModel.currency.collectAsStateWithLifecycle()
-    val period by viewModel.period.collectAsStateWithLifecycle()
-    val theme by viewModel.theme.collectAsStateWithLifecycle()
-    val refreshInterval by viewModel.refreshInterval.collectAsStateWithLifecycle()
+    val currency by viewModel.currency.collectAsStateWithLifecycle(initialValue = Currency.USD)
+    val period by viewModel.period.collectAsStateWithLifecycle(initialValue = PricePeriod.ALL)
+    val theme by viewModel.theme.collectAsStateWithLifecycle(initialValue = "system")
+    val refreshInterval by viewModel.refreshInterval.collectAsStateWithLifecycle(initialValue = 5)
 
     Scaffold { innerPadding ->
         Column(
