@@ -77,3 +77,30 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# Secrets
+secrets.properties
+*.keystore
+
+# Android Studio specific
+*.hprof
+*.orig
+*.log
+*.aux
+*.out
+
+# Local configuration
+local.properties
+.env
+
+# Build outputs
+app/build/
+app/.cxx/
+app/.gradle/
+app/*.apk
+app/*.aab
+app/release/
+app/debug/
+
+# Logs
+logs/
