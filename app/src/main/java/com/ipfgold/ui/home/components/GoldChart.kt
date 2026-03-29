@@ -1,19 +1,17 @@
 package com.ipfgold.ui.home.components
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import com.ipfgold.domain.model.ChartPoint
 import com.ipfgold.domain.model.Currency
-import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
-import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
-import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 
 @Composable
 fun GoldChart(
@@ -21,26 +19,23 @@ fun GoldChart(
  currency: Currency,
  modifier: Modifier = Modifier
 ) {
- val modelProducer = remember { CartesianChartModelProducer.build() }
+ if (points.isEmpty()) return
 
- LaunchedEffect(points, currency) {
- modelProducer.tryRunTransaction {
- lineSeries {
- series(
- points.map {
+ Canvas(modifier = modifier.fillMaxWidth().height(200.dp)) {
+ val values = points.map {
  if (currency == Currency.EUR) it.priceEUR.toFloat()
  else it.priceUSD.toFloat()
  }
- )
- }
- }
- }
+ val minVal = values.min()
+ val maxVal = values.max()
+ val range = if (maxVal - minVal == 0f) 1f else maxVal - minVal
 
- CartesianChartHost(
- chart = rememberCartesianChart(
- rememberLineCartesianLayer()
- ),
- modelProducer = modelProducer,
- modifier = modifier.fillMaxWidth().height(200.dp)
- )
+ val path = Path()
+ values.forEachIndexed { index, value ->
+ val x = index / (values.size - 1).toFloat() * size.width
+ val y = size.height - ((value - minVal) / range * size.height)
+ if (index == 0) path.moveTo(x, y) else path.lineTo(x, y)
+ }
+ drawPath(path, color = Color(0xFFD4A017), style = Stroke(width = 3f))
+ }
 }
