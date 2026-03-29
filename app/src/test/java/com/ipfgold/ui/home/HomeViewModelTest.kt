@@ -9,7 +9,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.time.LocalDate
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@Suppress("OPT_IN_USAGE")
 class HomeViewModelTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
