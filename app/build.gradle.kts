@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android") version "1.9.23"
-    id("org.jetbrains.kotlin.kapt") version "1.9.23"
+    id("org.jetbrains.kotlin.android") version "1.9.25"
+    id("org.jetbrains.kotlin.kapt") version "1.9.25"
 
     id("com.google.dagger.hilt.android")
 }
@@ -72,7 +72,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.navigation:navigation-compose")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.23")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.25")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
