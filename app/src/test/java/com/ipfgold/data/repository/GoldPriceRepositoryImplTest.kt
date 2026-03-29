@@ -9,14 +9,14 @@ import com.ipfgold.domain.repository.DataSourceException
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
+import org.junit.Assert.*
+import org.junit.Test
 import java.time.Instant
 import java.time.LocalDate
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@Suppress("OPT_IN_USAGE")
 class GoldPriceRepositoryImplTest {
 
     private val remoteDataSource = mockk<RemoteGoldPriceDataSource>()
@@ -77,12 +77,14 @@ class GoldPriceRepositoryImplTest {
         coEvery { localDataSource.getCurrentPrice() } returns null
 
         // When / Then
-        val exception = assertThrows(DataSourceException::class.java) {
-            runTest { repository.getCurrentPrice() }
+        try {
+            repository.getCurrentPrice()
+            fail("Expected DataSourceException")
+        } catch (e: DataSourceException) {
+            assertTrue(e.message!!.contains("No se pudo obtener el precio del oro"))
+            assertTrue(e.message!!.contains("Error de red"))
+            assertTrue(e.message!!.contains("No hay datos en caché"))
         }
-        assertTrue(exception.message!!.contains("No se pudo obtener el precio del oro"))
-        assertTrue(exception.message!!.contains("Error de red"))
-        assertTrue(exception.message!!.contains("No hay datos en caché"))
         coVerify { remoteDataSource.getCurrentPrice() }
         coVerify { localDataSource.getCurrentPrice() }
     }
@@ -158,12 +160,14 @@ class GoldPriceRepositoryImplTest {
         coEvery { localDataSource.getHistoricalPoints(period) } returns emptyList()
 
         // When / Then
-        val exception = assertThrows(DataSourceException::class.java) {
-            runTest { repository.getHistoricalPrices(period) }
+        try {
+            repository.getHistoricalPrices(period)
+            fail("Expected DataSourceException")
+        } catch (e: DataSourceException) {
+            assertTrue(e.message!!.contains("No se pudieron obtener los datos históricos"))
+            assertTrue(e.message!!.contains("Error de red"))
+            assertTrue(e.message!!.contains("No hay datos en caché"))
         }
-        assertTrue(exception.message!!.contains("No se pudieron obtener los datos históricos"))
-        assertTrue(exception.message!!.contains("Error de red"))
-        assertTrue(exception.message!!.contains("No hay datos en caché"))
         coVerify { remoteDataSource.getHistoricalPrices(period) }
         coVerify { localDataSource.getHistoricalPoints(period) }
     }

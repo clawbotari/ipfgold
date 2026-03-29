@@ -15,10 +15,10 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.After
+import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Test
 import java.time.Instant
 import java.time.LocalDate
 
@@ -29,14 +29,14 @@ class HomeViewModelTest {
     private lateinit var repository: GoldPriceRepository
     private lateinit var viewModel: HomeViewModel
 
-    @BeforeEach
+    @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         repository = mockk()
         viewModel = HomeViewModel(repository)
     }
 
-    @AfterEach
+    @After
     fun tearDown() {
         Dispatchers.resetMain()
     }

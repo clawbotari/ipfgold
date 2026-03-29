@@ -4,8 +4,8 @@ import com.ipfgold.data.remote.model.CurrencyExchangeResponse
 import com.ipfgold.data.remote.model.ExchangeRateDto
 import com.ipfgold.data.remote.model.GlobalQuoteDto
 import com.ipfgold.data.remote.model.GlobalQuoteResponse
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
+import org.junit.Assert.*
+import org.junit.Test
 import java.time.Instant
 
 class GoldPriceMapperTest {
@@ -77,7 +77,7 @@ class GoldPriceMapperTest {
         assertEquals(-0.27, result.changePercent24h, 0.001)
     }
 
-    @Test
+    @Test(expected = NumberFormatException::class)
     fun `toGoldPrice throws NumberFormatException on invalid numeric strings`() {
         // Given
         val quote = GlobalQuoteResponse(
@@ -99,9 +99,7 @@ class GoldPriceMapperTest {
         )
 
         // When / Then
-        assertThrows(NumberFormatException::class.java) {
-            mapper.toGoldPrice(quote, exchange)
-        }
+        mapper.toGoldPrice(quote, exchange)
     }
 
     @Test

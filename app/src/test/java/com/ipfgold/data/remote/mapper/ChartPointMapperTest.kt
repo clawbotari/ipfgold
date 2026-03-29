@@ -4,8 +4,8 @@ import com.ipfgold.data.remote.model.DailyDataDto
 import com.ipfgold.data.remote.model.MetaDataDto
 import com.ipfgold.data.remote.model.TimeSeriesDailyResponse
 import com.ipfgold.domain.model.PricePeriod
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
+import org.junit.Assert.*
+import org.junit.Test
 import java.time.LocalDate
 
 class ChartPointMapperTest {
@@ -141,7 +141,7 @@ class ChartPointMapperTest {
         assertEquals(LocalDate.parse("2026-03-29"), result[0].date)
     }
 
-    @Test
+    @Test(expected = NumberFormatException::class)
     fun `toChartPoints throws NumberFormatException on invalid numeric strings`() {
         val response = TimeSeriesDailyResponse(
             metaData = MetaDataDto("", "", "", "", ""),
@@ -156,8 +156,6 @@ class ChartPointMapperTest {
             )
         )
 
-        assertThrows(NumberFormatException::class.java) {
-            mapper.toChartPoints(response, 1.0, PricePeriod.ALL)
-        }
+        mapper.toChartPoints(response, 1.0, PricePeriod.ALL)
     }
 }
