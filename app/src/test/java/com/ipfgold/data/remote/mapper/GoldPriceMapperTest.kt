@@ -40,7 +40,8 @@ class GoldPriceMapperTest {
         // Then
         assertEquals(2150.50, result.priceUSD, 0.001)
         // priceEUR = 2150.50 * 0.8688 = 1868.3472
-        assertEquals(1868.3472, result.priceEUR, 0.001)
+        val expectedPriceEUR = 2150.50 * 0.8688
+        assertEquals(expectedPriceEUR, result.priceEUR, 0.001)
         assertEquals(10.25, result.change24h, 0.001)
         assertEquals(0.48, result.changePercent24h, 0.001)
         assertEquals(fixedTimestamp, result.timestamp)

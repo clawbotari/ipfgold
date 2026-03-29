@@ -147,10 +147,10 @@ class ChartPointMapperTest {
             metaData = MetaDataDto("", "", "", "", ""),
             timeSeries = mapOf(
                 "2026-03-29" to DailyDataDto(
-                    open = "invalid",
+                    open = "1",
                     high = "1",
                     low = "1",
-                    close = "2150.0",
+                    close = "invalid",
                     volume = "0"
                 )
             )

@@ -30,7 +30,11 @@ class ChartPointMapper @Inject constructor() {
 
         return response.timeSeries
             .mapNotNull { (dateStr, dailyData) ->
-                val date = LocalDate.parse(dateStr)
+                val date = try {
+                    LocalDate.parse(dateStr)
+                } catch (e: java.time.format.DateTimeParseException) {
+                    return@mapNotNull null
+                }
                 if (date.isBefore(startDate)) return@mapNotNull null
 
                 val priceUSD = dailyData.close.toDouble()
