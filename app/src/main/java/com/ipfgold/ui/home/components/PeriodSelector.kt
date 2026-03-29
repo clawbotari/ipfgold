@@ -86,6 +86,8 @@ private fun PeriodChip(
             labelColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant
         ),
         border = FilterChipDefaults.filterChipBorder(
+            enabled = true,
+            selected = selected,
             borderColor = androidx.compose.material3.MaterialTheme.colorScheme.outlineVariant,
             selectedBorderColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
             borderWidth = 1.dp
