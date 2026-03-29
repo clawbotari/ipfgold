@@ -55,6 +55,13 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    testOptions {
+        unitTests.all {
+            it.maxHeapSize = "1g"
+            it.jvmArgs("-XX:MaxMetaspaceSize=512m")
+        }
+    }
 }
 
 
