@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android") version "1.9.23"
     id("org.jetbrains.kotlin.kapt") version "1.9.23"
-    id("org.jetbrains.kotlin.plugin.compose") version "1.9.23"
+
     id("com.google.dagger.hilt.android")
 }
 
@@ -127,6 +127,7 @@ dependencies {
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
     testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("io.mockk:mockk-android:1.13.10")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
