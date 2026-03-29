@@ -16,7 +16,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButtons
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -110,8 +109,8 @@ fun PriceCard(
                     }
                 }
 
-                // Selector de moneda (segmented buttons)
-                SegmentedButtons(
+                // Selector de moneda (icon buttons)
+                CurrencySelector(
                     items = listOf(
                         Currency.USD to Icons.Default.AttachMoney,
                         Currency.EUR to Icons.Default.Euro
@@ -129,7 +128,7 @@ fun PriceCard(
  * Selector de moneda con iconos.
  */
 @Composable
-private fun SegmentedButtons(
+private fun CurrencySelector(
     items: List<Pair<Currency, androidx.compose.ui.graphics.vector.ImageVector>>,
     selectedItem: Currency,
     onItemSelect: (Currency) -> Unit,

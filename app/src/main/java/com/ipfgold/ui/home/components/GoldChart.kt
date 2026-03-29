@@ -102,8 +102,7 @@ fun GoldChart(
                     lineColor = GoldPrimary,
                     lineBackgroundShader = null,
                     lineThickness = 3.dp,
-                    pointSize = 0.dp, // Sin puntos en la línea
-                    smoothInterpolation = true
+                    pointSize = 0.dp // Sin puntos en la línea
                 )
             ),
             axisValuesOverrider = AxisValuesOverrider.fixed(
@@ -118,14 +117,14 @@ fun GoldChart(
                     }.toFloat(),
                     lineComponent = LineComponent(
                         color = BullishGreen.copy(alpha = 0.5f),
-                        thickness = 1.dp,
+                        lineThickness = 1.dp,
                         shape = Shapes.rectShape
                     )
                 )
             )
         ),
-        chartModelProducer = modelProducer,
-        chartModel = model,
+        modelProducer = modelProducer,
+        model = model,
         marker = marker,
         startAxis = startAxis(
             tickLength = 0.dp,

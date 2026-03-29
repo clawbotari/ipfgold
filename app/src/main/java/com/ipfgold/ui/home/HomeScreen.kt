@@ -12,15 +12,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.pullrefresh.PullRefreshIndicator
-import androidx.compose.material3.pullrefresh.pullRefresh
-import androidx.compose.material3.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,18 +40,13 @@ import com.ipfgold.ui.theme.IpfGoldTheme
  *
  * Muestra el precio actual del oro, gráfico histórico y controles de período/moneda.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // Pull‑to‑refresh
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = uiState is HomeUiState.Loading,
-        onRefresh = { viewModel.loadData() }
-    )
+
 
     Scaffold(
         floatingActionButton = {
@@ -72,14 +63,10 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .pullRefresh(pullRefreshState),
+
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            PullRefreshIndicator(
-                refreshing = uiState is HomeUiState.Loading,
-                state = pullRefreshState,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+
 
             when (val state = uiState) {
                 is HomeUiState.Loading -> {
