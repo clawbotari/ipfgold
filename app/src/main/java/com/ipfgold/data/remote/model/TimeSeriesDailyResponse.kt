@@ -25,37 +25,36 @@ import com.google.gson.annotations.SerializedName
  *     }
  *   }
  * }
- * ```
  */
 data class TimeSeriesDailyResponse(
     @SerializedName("Meta Data")
-    val metaData: MetaDataDto,
+    val metaData: MetaDataDto?,
     @SerializedName("Time Series (Daily)")
-    val timeSeries: Map<String, DailyDataDto>
+    val timeSeries: Map<String, DailyDataDto>?
 )
 
 data class MetaDataDto(
     @SerializedName("1. Information")
-    val information: String,
+    val information: String?,
     @SerializedName("2. Symbol")
-    val symbol: String,
+    val symbol: String?,
     @SerializedName("3. Last Refreshed")
-    val lastRefreshed: String,
+    val lastRefreshed: String?,
     @SerializedName("4. Output Size")
-    val outputSize: String,
+    val outputSize: String?,
     @SerializedName("5. Time Zone")
-    val timeZone: String
+    val timeZone: String?
 )
 
 data class DailyDataDto(
     @SerializedName("1. open")
-    val open: String,
+    val open: String?,
     @SerializedName("2. high")
-    val high: String,
+    val high: String?,
     @SerializedName("3. low")
-    val low: String,
+    val low: String?,
     @SerializedName("4. close")
-    val close: String,
+    val close: String?,
     @SerializedName("5. volume")
-    val volume: String
+    val volume: String?
 )

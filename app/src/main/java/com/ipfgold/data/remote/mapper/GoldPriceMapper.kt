@@ -26,12 +26,23 @@ class GoldPriceMapper @Inject constructor() {
         timestamp: Instant = Instant.now()
     ): GoldPrice {
         val quoteDto = quote.globalQuote
+            ?: throw IllegalArgumentException("GlobalQuoteResponse.globalQuote is null")
         val exchangeDto = exchange.exchangeRate
+            ?: throw IllegalArgumentException("CurrencyExchangeResponse.exchangeRate is null")
 
-        val priceUSD = quoteDto.price.toDouble()
-        val change24h = quoteDto.change.toDouble()
-        val changePercent24h = quoteDto.changePercent.removeSuffix("%").toDouble()
-        val exchangeRate = exchangeDto.rate.toDouble()
+        val priceUSD = quoteDto.price
+            ?.toDoubleOrNull()
+            ?: throw NumberFormatException("quote.price is null or not a number")
+        val change24h = quoteDto.change
+            ?.toDoubleOrNull()
+            ?: throw NumberFormatException("quote.change is null or not a number")
+        val changePercent24h = quoteDto.changePercent
+            ?.removeSuffix("%")
+            ?.toDoubleOrNull()
+            ?: throw NumberFormatException("quote.changePercent is null or not a number")
+        val exchangeRate = exchangeDto.rate
+            ?.toDoubleOrNull()
+            ?: throw NumberFormatException("exchange.rate is null or not a number")
 
         val priceEUR = priceUSD * exchangeRate
 

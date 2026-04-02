@@ -28,7 +28,9 @@ class ChartPointMapper @Inject constructor() {
     ): List<ChartPoint> {
         val startDate = calculateStartDate(period)
 
-        return response.timeSeries
+        val timeSeries = response.timeSeries ?: return emptyList()
+
+        return timeSeries
             .mapNotNull { (dateStr, dailyData) ->
                 val date = try {
                     LocalDate.parse(dateStr)
@@ -37,7 +39,9 @@ class ChartPointMapper @Inject constructor() {
                 }
                 if (date.isBefore(startDate)) return@mapNotNull null
 
-                val priceUSD = dailyData.close.toDouble()
+                val priceUSD = dailyData.close
+                    ?.toDoubleOrNull()
+                    ?: return@mapNotNull null
                 val priceEUR = priceUSD * exchangeRate
 
                 ChartPoint(

@@ -55,7 +55,9 @@ class RemoteGoldPriceDataSource @Inject constructor(
 
             val series = seriesDeferred.await()
             val exchange = exchangeDeferred.await()
-            val exchangeRate = exchange.exchangeRate.rate.toDouble()
+            val exchangeRate = exchange.exchangeRate?.rate
+                ?.toDoubleOrNull()
+                ?: throw DataSourceException("Exchange rate is null or invalid")
 
             chartPointMapper.toChartPoints(series, exchangeRate, period)
         }

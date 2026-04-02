@@ -17,24 +17,23 @@ import com.google.gson.annotations.SerializedName
  *     "08. previous close": "4405.3100"
  *   }
  * }
- * ```
  */
 data class GlobalQuoteResponse(
     @SerializedName("Global Quote")
-    val globalQuote: GlobalQuoteDto
+    val globalQuote: GlobalQuoteDto?
 )
 
 data class GlobalQuoteDto(
     @SerializedName("01. symbol")
-    val symbol: String,
+    val symbol: String?,
     @SerializedName("05. price")
-    val price: String,
+    val price: String?,
     @SerializedName("09. change")
-    val change: String,
+    val change: String?,
     @SerializedName("10. change percent")
-    val changePercent: String,
+    val changePercent: String?,
     @SerializedName("07. latest trading day")
-    val latestTradingDay: String,
+    val latestTradingDay: String?,
     @SerializedName("08. previous close")
-    val previousClose: String
+    val previousClose: String?
 )
