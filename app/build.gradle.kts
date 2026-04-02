@@ -1,3 +1,4 @@
+import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android") version "1.9.25"
@@ -18,7 +19,10 @@ android {
         versionName = "1.0"
 
         // API key de Alpha Vantage (usa gradle.properties o variable de entorno)
-        val apiKey = project.findProperty("ALPHA_VANTAGE_API_KEY") as? String ?: "demo"
+        val secretsFile = rootProject.file("app/secrets.properties")
+        val apiKey = if (secretsFile.exists()) {
+            Properties().apply { load(secretsFile.inputStream()) }.getProperty("ALPHA_VANTAGE_API_KEY", "demo")
+        } else "demo"
         buildConfigField("String", "ALPHA_VANTAGE_API_KEY", "\"$apiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
