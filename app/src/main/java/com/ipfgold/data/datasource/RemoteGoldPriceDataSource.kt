@@ -39,7 +39,10 @@ class RemoteGoldPriceDataSource @Inject constructor(
     } catch (e: HttpException) {
         throw DataSourceException("HTTP error fetching gold price: ${e.code()}", e)
     } catch (e: Exception) {
-        throw DataSourceException("Network error fetching gold price", e)
+        throw DataSourceException(
+            "Network error fetching gold price: ${e.javaClass.simpleName}: ${e.message} | cause: ${e.cause?.message}",
+            e
+        )
     }
 
     /**
@@ -59,6 +62,9 @@ class RemoteGoldPriceDataSource @Inject constructor(
     } catch (e: HttpException) {
         throw DataSourceException("HTTP error fetching historical prices: ${e.code()}", e)
     } catch (e: Exception) {
-        throw DataSourceException("Network error fetching historical prices", e)
+        throw DataSourceException(
+            "Network error fetching historical prices: ${e.javaClass.simpleName}: ${e.message} | cause: ${e.cause?.message}",
+            e
+        )
     }
 }

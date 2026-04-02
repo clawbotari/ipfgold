@@ -72,8 +72,8 @@ class HomeViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.update {
                     HomeUiState.Error(
-                        message = "No se pudieron cargar los datos: ${e.message ?: "Error desconocido"}",
-                        cause = (e.cause?.toString() ?: e.toString()).take(500)
+                        message = e.message ?: "Error desconocido",
+                        cause = e.cause?.let { "${it.javaClass.simpleName}: ${it.message}" }
                     )
                 }
             }
