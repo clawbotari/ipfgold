@@ -36,10 +36,10 @@ sealed class HomeUiState {
      * Error al cargar los datos.
      *
      * @property message Mensaje de error legible.
-     * @property canRetry True si el usuario puede reintentar.
+     * @property cause Causa técnica del error (opcional, para diagnóstico).
      */
     data class Error(
         val message: String,
-        val canRetry: Boolean = true
+        val cause: String? = null
     ) : HomeUiState()
 }

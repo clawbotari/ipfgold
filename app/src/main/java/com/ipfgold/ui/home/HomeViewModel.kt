@@ -73,7 +73,7 @@ class HomeViewModel @Inject constructor(
                 _uiState.update {
                     HomeUiState.Error(
                         message = "No se pudieron cargar los datos: ${e.message ?: "Error desconocido"}",
-                        canRetry = true
+                        cause = (e.cause?.toString() ?: e.toString()).take(500)
                     )
                 }
             }

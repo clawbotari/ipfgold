@@ -88,7 +88,7 @@ fun HomeScreen(
                 is HomeUiState.Error -> {
                     ErrorScreen(
                         message = state.message,
-                        canRetry = state.canRetry,
+                        cause = state.cause,
                         onRetry = { viewModel.loadData() }
                     )
                 }
@@ -163,7 +163,7 @@ private fun SuccessScreen(
 @Composable
 private fun ErrorScreen(
     message: String,
-    canRetry: Boolean,
+    cause: String?,
     onRetry: () -> Unit
 ) {
     Column(
@@ -176,8 +176,16 @@ private fun ErrorScreen(
             onRetry = onRetry,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(32.dp)
+                .padding(horizontal = 32.dp)
         )
+        if (cause != null) {
+            Text(
+                text = cause,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
     }
 }
 
