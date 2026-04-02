@@ -57,9 +57,11 @@ android {
     }
 
     testOptions {
+        unitTests.isReturnDefaultValues = true
         unitTests.all {
-            it.maxHeapSize = "1g"
-            it.jvmArgs("-XX:MaxMetaspaceSize=512m")
+            it.maxHeapSize = "4g"
+            it.maxParallelForks = 1
+            it.jvmArgs("-XX:MaxMetaspaceSize=1g", "-Xss4m")
         }
     }
 }
