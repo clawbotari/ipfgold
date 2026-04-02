@@ -20,13 +20,13 @@ import com.squareup.moshi.JsonClass
  * }
  * ```
  */
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class GlobalQuoteResponse(
     @Json(name = "Global Quote")
     val globalQuote: GlobalQuoteDto
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class GlobalQuoteDto(
     @Json(name = "01. symbol")
     val symbol: String,

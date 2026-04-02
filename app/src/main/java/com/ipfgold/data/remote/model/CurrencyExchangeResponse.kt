@@ -3,13 +3,13 @@ package com.ipfgold.data.remote.model
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class CurrencyExchangeResponse(
  @Json(name = "Realtime Currency Exchange Rate")
  val exchangeRate: ExchangeRateDto
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class ExchangeRateDto(
  @Json(name = "1. From_Currency Code")
  val fromCurrency: String,

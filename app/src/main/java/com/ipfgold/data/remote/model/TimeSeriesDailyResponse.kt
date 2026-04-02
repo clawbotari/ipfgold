@@ -28,7 +28,7 @@ import com.squareup.moshi.JsonClass
  * }
  * ```
  */
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class TimeSeriesDailyResponse(
     @Json(name = "Meta Data")
     val metaData: MetaDataDto,
@@ -36,7 +36,7 @@ data class TimeSeriesDailyResponse(
     val timeSeries: Map<String, DailyDataDto>
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class MetaDataDto(
     @Json(name = "1. Information")
     val information: String,
@@ -50,7 +50,7 @@ data class MetaDataDto(
     val timeZone: String
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class DailyDataDto(
     @Json(name = "1. open")
     val open: String,
