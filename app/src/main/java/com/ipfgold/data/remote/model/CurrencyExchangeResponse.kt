@@ -25,6 +25,10 @@ data class CurrencyExchangeResponse(
 
 @JsonClass(generateAdapter = true)
 data class ExchangeRateDto(
+    @Json(name = "1. From Currency Code")
+    val fromCurrency: String,
+    @Json(name = "3. To Currency Code")
+    val toCurrency: String,
     @Json(name = "5. Exchange Rate")
     val rate: String,
     @Json(name = "6. Last Refreshed")

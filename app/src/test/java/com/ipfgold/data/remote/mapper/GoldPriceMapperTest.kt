@@ -27,6 +27,8 @@ class GoldPriceMapperTest {
         )
         val exchange = CurrencyExchangeResponse(
             exchangeRate = ExchangeRateDto(
+                fromCurrency = "USD",
+                toCurrency = "EUR",
                 rate = "0.8688",
                 lastRefreshed = "2026-03-29 10:00:00",
                 timeZone = "UTC"
@@ -62,6 +64,8 @@ class GoldPriceMapperTest {
         )
         val exchange = CurrencyExchangeResponse(
             exchangeRate = ExchangeRateDto(
+                fromCurrency = "USD",
+                toCurrency = "EUR",
                 rate = "0.8700",
                 lastRefreshed = "2026-03-29 10:00:00",
                 timeZone = "UTC"
@@ -93,6 +97,8 @@ class GoldPriceMapperTest {
         )
         val exchange = CurrencyExchangeResponse(
             exchangeRate = ExchangeRateDto(
+                fromCurrency = "USD",
+                toCurrency = "EUR",
                 rate = "0.8688",
                 lastRefreshed = "2026-03-29 10:00:00",
                 timeZone = "UTC"
@@ -118,6 +124,8 @@ class GoldPriceMapperTest {
         )
         val exchange = CurrencyExchangeResponse(
             exchangeRate = ExchangeRateDto(
+                fromCurrency = "USD",
+                toCurrency = "EUR",
                 rate = "0.85",
                 lastRefreshed = "2026-03-29 10:00:00",
                 timeZone = "UTC"
