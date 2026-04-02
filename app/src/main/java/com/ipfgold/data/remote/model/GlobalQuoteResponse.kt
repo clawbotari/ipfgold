@@ -1,7 +1,6 @@
 package com.ipfgold.data.remote.model
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import com.google.gson.annotations.SerializedName
 
 /**
  * Respuesta del endpoint `GLOBAL_QUOTE` de Alpha Vantage.
@@ -20,24 +19,22 @@ import com.squareup.moshi.JsonClass
  * }
  * ```
  */
-@JsonClass(generateAdapter = false)
 data class GlobalQuoteResponse(
-    @Json(name = "Global Quote")
+    @SerializedName("Global Quote")
     val globalQuote: GlobalQuoteDto
 )
 
-@JsonClass(generateAdapter = false)
 data class GlobalQuoteDto(
-    @Json(name = "01. symbol")
+    @SerializedName("01. symbol")
     val symbol: String,
-    @Json(name = "05. price")
+    @SerializedName("05. price")
     val price: String,
-    @Json(name = "09. change")
+    @SerializedName("09. change")
     val change: String,
-    @Json(name = "10. change percent")
+    @SerializedName("10. change percent")
     val changePercent: String,
-    @Json(name = "07. latest trading day")
+    @SerializedName("07. latest trading day")
     val latestTradingDay: String,
-    @Json(name = "08. previous close")
+    @SerializedName("08. previous close")
     val previousClose: String
 )

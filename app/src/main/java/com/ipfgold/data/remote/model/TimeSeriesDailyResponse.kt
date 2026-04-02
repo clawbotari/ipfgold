@@ -1,7 +1,6 @@
 package com.ipfgold.data.remote.model
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import com.google.gson.annotations.SerializedName
 
 /**
  * Respuesta del endpoint `TIME_SERIES_DAILY` de Alpha Vantage.
@@ -28,38 +27,35 @@ import com.squareup.moshi.JsonClass
  * }
  * ```
  */
-@JsonClass(generateAdapter = false)
 data class TimeSeriesDailyResponse(
-    @Json(name = "Meta Data")
+    @SerializedName("Meta Data")
     val metaData: MetaDataDto,
-    @Json(name = "Time Series (Daily)")
+    @SerializedName("Time Series (Daily)")
     val timeSeries: Map<String, DailyDataDto>
 )
 
-@JsonClass(generateAdapter = false)
 data class MetaDataDto(
-    @Json(name = "1. Information")
+    @SerializedName("1. Information")
     val information: String,
-    @Json(name = "2. Symbol")
+    @SerializedName("2. Symbol")
     val symbol: String,
-    @Json(name = "3. Last Refreshed")
+    @SerializedName("3. Last Refreshed")
     val lastRefreshed: String,
-    @Json(name = "4. Output Size")
+    @SerializedName("4. Output Size")
     val outputSize: String,
-    @Json(name = "5. Time Zone")
+    @SerializedName("5. Time Zone")
     val timeZone: String
 )
 
-@JsonClass(generateAdapter = false)
 data class DailyDataDto(
-    @Json(name = "1. open")
+    @SerializedName("1. open")
     val open: String,
-    @Json(name = "2. high")
+    @SerializedName("2. high")
     val high: String,
-    @Json(name = "3. low")
+    @SerializedName("3. low")
     val low: String,
-    @Json(name = "4. close")
+    @SerializedName("4. close")
     val close: String,
-    @Json(name = "5. volume")
+    @SerializedName("5. volume")
     val volume: String
 )

@@ -2,8 +2,8 @@ package com.ipfgold.di
 
 import com.ipfgold.BuildConfig
 import com.ipfgold.data.remote.api.AlphaVantageService
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.google.gson.GsonBuilder
+import retrofit2.converter.gson.GsonConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,7 +12,6 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -23,46 +22,38 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideApiKeyInterceptor(): Interceptor = Interceptor { chain ->
-        val originalRequest = chain.request()
-        val url = originalRequest.url.newBuilder()
-            .addQueryParameter("apikey", BuildConfig.ALPHA_VANTAGE_API_KEY)
+    fun provideOkHttpClient(): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
+        }
+
+        val apiKeyInterceptor = Interceptor { chain ->
+            val originalRequest = chain.request()
+            val url = originalRequest.url.newBuilder()
+                .addQueryParameter("apikey", BuildConfig.ALPHA_VANTAGE_API_KEY)
+                .build()
+            val newRequest = originalRequest.newBuilder()
+                .url(url)
+                .build()
+            chain.proceed(newRequest)
+        }
+
+        return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor(apiKeyInterceptor)
             .build()
-        val newRequest = originalRequest.newBuilder()
-            .url(url)
-            .build()
-        chain.proceed(newRequest)
     }
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(
-        apiKeyInterceptor: Interceptor
-    ): OkHttpClient = OkHttpClient.Builder()
-        .addInterceptor(apiKeyInterceptor)
-        .addInterceptor(
-            HttpLoggingInterceptor().apply {
-                level = if (BuildConfig.DEBUG) {
-                    HttpLoggingInterceptor.Level.BODY
-                } else {
-                    HttpLoggingInterceptor.Level.NONE
-                }
-            }
-        )
-        .build()
-
-    @Provides
-    @Singleton
-    fun provideMoshi(): Moshi = Moshi.Builder()
-        .addLast(KotlinJsonAdapterFactory())
-        .build()
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit = Retrofit.Builder()
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     @Provides
