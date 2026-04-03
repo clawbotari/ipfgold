@@ -26,9 +26,9 @@ class GoldPriceMapper @Inject constructor() {
         timestamp: Instant = Instant.now()
     ): GoldPrice {
         val quoteDto = quote.globalQuote
-            ?: throw IllegalArgumentException("GlobalQuoteResponse.globalQuote is null")
+            ?: throw IllegalStateException("API rate limit reached or invalid response. Check your Alpha Vantage plan.")
         val exchangeDto = exchange.exchangeRate
-            ?: throw IllegalArgumentException("CurrencyExchangeResponse.exchangeRate is null")
+            ?: throw IllegalStateException("API rate limit reached or invalid response. Check your Alpha Vantage plan.")
 
         val priceUSD = quoteDto.price
             ?.toDoubleOrNull()

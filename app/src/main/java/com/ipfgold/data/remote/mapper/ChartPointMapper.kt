@@ -28,7 +28,8 @@ class ChartPointMapper @Inject constructor() {
     ): List<ChartPoint> {
         val startDate = calculateStartDate(period)
 
-        val timeSeries = response.timeSeries ?: return emptyList()
+        val timeSeries = response.timeSeries
+            ?: throw IllegalStateException("API rate limit reached or invalid response.")
 
         return timeSeries
             .mapNotNull { (dateStr, dailyData) ->
