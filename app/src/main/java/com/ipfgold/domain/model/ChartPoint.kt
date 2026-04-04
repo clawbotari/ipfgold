@@ -8,5 +8,6 @@ import java.time.LocalDate
 data class ChartPoint(
     val date: LocalDate,
     val priceUSD: Double,
-    val priceEUR: Double
+    val priceEUR: Double,
+    val isDemo: Boolean = false
 )

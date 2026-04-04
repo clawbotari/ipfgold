@@ -61,7 +61,8 @@ class ChartPointMapper @Inject constructor() {
                 ChartPoint(
                     date = date,
                     priceUSD = priceUSD,
-                    priceEUR = priceEUR
+                    priceEUR = priceEUR,
+                    isDemo = false
                 )
             }
             .sortedBy { it.date }

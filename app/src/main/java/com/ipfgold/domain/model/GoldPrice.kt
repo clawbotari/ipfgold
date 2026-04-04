@@ -10,7 +10,8 @@ data class GoldPrice(
     val priceEUR: Double,
     val change24h: Double,
     val changePercent24h: Double,
-    val timestamp: Instant
+    val timestamp: Instant,
+    val isDemo: Boolean = false
 ) {
     /**
      * Devuelve el precio en la moneda solicitada.

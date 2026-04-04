@@ -23,13 +23,15 @@ sealed class HomeUiState {
      * @property selectedCurrency Moneda de visualización (USD/EUR).
      * @property selectedPeriod Período del gráfico.
      * @property isOffline True si los datos provienen de la caché (sin conexión).
+     * @property isDemo True si los datos son de demostración (fallback cuando API y caché fallan).
      */
     data class Success(
         val price: GoldPrice,
         val chartPoints: List<ChartPoint>,
         val selectedCurrency: Currency,
         val selectedPeriod: PricePeriod,
-        val isOffline: Boolean = false
+        val isOffline: Boolean = false,
+        val isDemo: Boolean = false
     ) : HomeUiState()
 
     /**

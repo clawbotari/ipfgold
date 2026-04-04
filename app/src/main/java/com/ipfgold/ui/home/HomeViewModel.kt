@@ -59,6 +59,7 @@ class HomeViewModel @Inject constructor(
             try {
                 val price = repository.getCurrentPrice()
                 val chartPoints = repository.getHistoricalPrices(selectedPeriod)
+                val isDemo = price.isDemo || chartPoints.any { it.isDemo }
 
                 _uiState.update {
                     HomeUiState.Success(
@@ -66,7 +67,8 @@ class HomeViewModel @Inject constructor(
                         chartPoints = chartPoints,
                         selectedCurrency = selectedCurrency,
                         selectedPeriod = selectedPeriod,
-                        isOffline = false // TODO: detectar offline (network monitor)
+                        isOffline = false, // TODO: detectar offline (network monitor)
+                        isDemo = isDemo
                     )
                 }
             } catch (e: Exception) {
@@ -109,10 +111,12 @@ class HomeViewModel @Inject constructor(
                 _uiState.update { HomeUiState.Loading }
                 try {
                     val chartPoints = repository.getHistoricalPrices(period)
+                    val isDemo = current.price.isDemo || chartPoints.any { it.isDemo }
                     _uiState.update {
                         current.copy(
                             chartPoints = chartPoints,
-                            selectedPeriod = period
+                            selectedPeriod = period,
+                            isDemo = isDemo
                         )
                     }
                 } catch (e: Exception) {

@@ -45,7 +45,8 @@ class GoldPriceMapper @Inject constructor() {
             priceEUR = priceEUR,
             change24h = change24h,
             changePercent24h = changePercent24h,
-            timestamp = timestamp
+            timestamp = timestamp,
+            isDemo = false
         )
     }
 }

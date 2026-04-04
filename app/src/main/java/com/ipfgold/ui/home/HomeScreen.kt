@@ -79,6 +79,7 @@ fun HomeScreen(
                         selectedCurrency = state.selectedCurrency,
                         selectedPeriod = state.selectedPeriod,
                         isOffline = state.isOffline,
+                        isDemo = state.isDemo,
                         onCurrencyToggle = viewModel::setCurrency,
                         onPeriodSelected = viewModel::setPeriod,
                         modifier = Modifier.fillMaxSize()
@@ -118,12 +119,44 @@ private fun LoadingScreen() {
 }
 
 @Composable
+private fun DemoBanner(
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.warning.copy(alpha = 0.9f),
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.Warning,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = "Datos de demostración — API no disponible",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+@Composable
 private fun SuccessScreen(
     price: com.ipfgold.domain.model.GoldPrice,
     chartPoints: List<com.ipfgold.domain.model.ChartPoint>,
     selectedCurrency: com.ipfgold.domain.model.Currency,
     selectedPeriod: com.ipfgold.domain.model.PricePeriod,
     isOffline: Boolean,
+    isDemo: Boolean,
     onCurrencyToggle: (com.ipfgold.domain.model.Currency) -> Unit,
     onPeriodSelected: (com.ipfgold.domain.model.PricePeriod) -> Unit,
     modifier: Modifier = Modifier
@@ -132,8 +165,11 @@ private fun SuccessScreen(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Banner offline (si aplica)
-        if (isOffline) {
+        // Banner de datos de demostración (si aplica)
+        if (isDemo) {
+            DemoBanner(modifier = Modifier.padding(horizontal = 16.dp))
+        } else if (isOffline) {
+            // Banner offline (si aplica)
             OfflineBanner(modifier = Modifier.padding(horizontal = 16.dp))
         }
 

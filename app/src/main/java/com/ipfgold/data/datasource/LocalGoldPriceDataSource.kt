@@ -25,8 +25,8 @@ class LocalGoldPriceDataSource @Inject constructor(
 ) {
 
     companion object {
-        private const val CURRENT_PRICE_TTL_MINUTES = 5L
-        private const val HISTORICAL_DATA_TTL_DAYS = 1L
+        private const val CURRENT_PRICE_TTL_MINUTES = 60L  // 1 hora
+        private const val HISTORICAL_DATA_TTL_DAYS = 7L    // 1 semana
     }
 
     // ---------- Precio actual ----------
