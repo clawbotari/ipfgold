@@ -3,6 +3,7 @@ package com.ipfgold.data.remote.mapper
 import com.ipfgold.data.remote.model.TimeSeriesDailyResponse
 import com.ipfgold.domain.model.ChartPoint
 import com.ipfgold.domain.model.PricePeriod
+import timber.log.Timber
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -10,6 +11,10 @@ import javax.inject.Inject
  * Mapea el DTO de series temporales de Alpha Vantage a una lista de [ChartPoint].
  */
 class ChartPointMapper @Inject constructor() {
+
+    companion object {
+        private const val FALLBACK_EXCHANGE_RATE = 0.92
+    }
 
     /**
      * Convierte la respuesta diaria a puntos de gráfico, aplicando un filtro de período
@@ -28,6 +33,14 @@ class ChartPointMapper @Inject constructor() {
     ): List<ChartPoint> {
         val startDate = calculateStartDate(period)
 
+        // Si la tasa de cambio es inválida (≤ 0), usamos un valor de fallback
+        val effectiveRate = if (exchangeRate <= 0.0) {
+            Timber.w("Invalid exchange rate ($exchangeRate). Using fallback: $FALLBACK_EXCHANGE_RATE")
+            FALLBACK_EXCHANGE_RATE
+        } else {
+            exchangeRate
+        }
+
         val timeSeries = response.timeSeries
             ?: throw IllegalStateException("API rate limit reached or invalid response.")
 
@@ -43,7 +56,7 @@ class ChartPointMapper @Inject constructor() {
                 val priceUSD = dailyData.close
                     ?.toDoubleOrNull()
                     ?: return@mapNotNull null
-                val priceEUR = priceUSD * exchangeRate
+                val priceEUR = priceUSD * effectiveRate
 
                 ChartPoint(
                     date = date,

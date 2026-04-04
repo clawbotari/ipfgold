@@ -1,6 +1,5 @@
 package com.ipfgold.data.remote.mapper
 
-import com.ipfgold.data.remote.model.CurrencyExchangeResponse
 import com.ipfgold.data.remote.model.GlobalQuoteResponse
 import com.ipfgold.domain.model.GoldPrice
 import java.time.Instant
@@ -16,18 +15,16 @@ class GoldPriceMapper @Inject constructor() {
      * para producir un [GoldPrice] con precios en ambas monedas.
      *
      * @param quote Respuesta de `GLOBAL_QUOTE` (precio en USD).
-     * @param exchange Respuesta de `CURRENCY_EXCHANGE_RATE`.
+     * @param exchangeRate Tasa de cambio USD → EUR (ej. 0.8688).
      * @param timestamp Momento en que se obtuvieron los datos (por defecto ahora).
      * @throws NumberFormatException Si algún campo numérico no puede ser parseado.
      */
     fun toGoldPrice(
         quote: GlobalQuoteResponse,
-        exchange: CurrencyExchangeResponse,
+        exchangeRate: Double,
         timestamp: Instant = Instant.now()
     ): GoldPrice {
         val quoteDto = quote.globalQuote
-            ?: throw IllegalStateException("API rate limit reached or invalid response. Check your Alpha Vantage plan.")
-        val exchangeDto = exchange.exchangeRate
             ?: throw IllegalStateException("API rate limit reached or invalid response. Check your Alpha Vantage plan.")
 
         val priceUSD = quoteDto.price
@@ -40,9 +37,6 @@ class GoldPriceMapper @Inject constructor() {
             ?.removeSuffix("%")
             ?.toDoubleOrNull()
             ?: throw NumberFormatException("quote.changePercent is null or not a number")
-        val exchangeRate = exchangeDto.rate
-            ?.toDoubleOrNull()
-            ?: throw NumberFormatException("exchange.rate is null or not a number")
 
         val priceEUR = priceUSD * exchangeRate
 
