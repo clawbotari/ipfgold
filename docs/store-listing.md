@@ -88,6 +88,8 @@ Las capturas están en la carpeta `documentation/`:
 - `debug_screen_4.jpg` – Selector de período
 - `debug_screen_5.jpg` – Indicador de subida/bajada
 - `debug_screen_13.jpg` – Banner de datos demo (cuando API no disponible)
+- `debug_screen_14.jpg` – Vista adicional para Google Play
+- `debug_screen_15.jpg` – Vista adicional para Google Play
 
 ## 9. Notas para la revisión de Google Play
 
