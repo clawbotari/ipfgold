@@ -91,6 +91,7 @@ Las capturas están en la carpeta `documentation/`:
 - `debug_screen_14.jpg` – Vista adicional para Google Play
 - `debug_screen_15.jpg` – Vista adicional para Google Play
 - `debug_screen_16.jpg` – Vista adicional para Google Play
+- `debug_screen_17.jpg` – Vista adicional para Google Play
 
 ## 9. Notas para la revisión de Google Play
 
