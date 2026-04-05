@@ -1,4 +1,4 @@
-import java.util.Properties
+import java.util.Properties as JavaProperties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android") version "1.9.25"
@@ -7,9 +7,23 @@ plugins {
     id("com.google.dagger.hilt.android")
 }
 
+val keystorePropertiesFile = rootProject.file("app/keystore.properties")
+val keystoreProperties = JavaProperties().apply {
+    if (keystorePropertiesFile.exists()) load(keystorePropertiesFile.inputStream())
+}
+
 android {
     namespace = "com.ipfgold"
     compileSdk = 35
+
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as? String
+            keyPassword = keystoreProperties["keyPassword"] as? String
+            storeFile = keystoreProperties["storeFile"]?.let { file("$it") }
+            storePassword = keystoreProperties["storePassword"] as? String
+        }
+    }
 
     defaultConfig {
         applicationId = "com.ipfgold"
@@ -21,7 +35,7 @@ android {
         // API key de Alpha Vantage (usa gradle.properties o variable de entorno)
         val secretsFile = rootProject.file("app/secrets.properties")
         val apiKey = if (secretsFile.exists()) {
-            Properties().apply { load(secretsFile.inputStream()) }.getProperty("ALPHA_VANTAGE_API_KEY", "demo")
+            JavaProperties().apply { load(secretsFile.inputStream()) }.getProperty("ALPHA_VANTAGE_API_KEY", "demo")
         } else "demo"
         buildConfigField("String", "ALPHA_VANTAGE_API_KEY", "\"$apiKey\"")
 
@@ -33,7 +47,9 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

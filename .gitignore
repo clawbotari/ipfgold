@@ -103,4 +103,5 @@ app/release/
 app/debug/
 
 # Logs
-logs/
+logs/app/ipfgold-release.jks
+app/keystore.properties
