@@ -13,7 +13,7 @@ val keystoreProperties = JavaProperties().apply {
 }
 
 android {
-    namespace = "com.ipfgold"
+    namespace = "com.github.clawbotari.ipfgold"
     compileSdk = 35
 
     signingConfigs {
@@ -26,7 +26,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.ipfgold"
+        applicationId = "com.github.clawbotari.ipfgold"
         minSdk = 26
         targetSdk = 35
         versionCode = 3
