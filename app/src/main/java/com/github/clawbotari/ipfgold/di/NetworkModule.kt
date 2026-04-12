@@ -2,6 +2,8 @@ package com.github.clawbotari.ipfgold.di
 
 import com.github.clawbotari.ipfgold.BuildConfig
 import com.github.clawbotari.ipfgold.data.remote.api.AlphaVantageService
+import com.github.clawbotari.ipfgold.data.remote.api.MetalsApiService
+import com.github.clawbotari.ipfgold.data.remote.api.GoldApiService
 import com.google.gson.GsonBuilder
 import retrofit2.converter.gson.GsonConverterFactory
 import dagger.Module
@@ -18,11 +20,13 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://www.alphavantage.co/"
+    private const val ALPHA_VANTAGE_BASE_URL = "https://www.alphavantage.co/"
+    private const val METALS_API_BASE_URL = "https://metals-api.com/api/"
+    private const val GOLD_API_BASE_URL = "https://www.goldapi.io/api/"
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideAlphaVantageOkHttpClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) {
                 HttpLoggingInterceptor.Level.BODY
@@ -50,9 +54,40 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(okHttpClient)
+    fun provideBaseOkHttpClient(): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
+        }
+        return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAlphaVantageRetrofit(): Retrofit = Retrofit.Builder()
+        .baseUrl(ALPHA_VANTAGE_BASE_URL)
+        .client(provideAlphaVantageOkHttpClient())
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    @Provides
+    @Singleton
+    fun provideMetalsApiRetrofit(): Retrofit = Retrofit.Builder()
+        .baseUrl(METALS_API_BASE_URL)
+        .client(provideBaseOkHttpClient())
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    @Provides
+    @Singleton
+    fun provideGoldApiRetrofit(): Retrofit = Retrofit.Builder()
+        .baseUrl(GOLD_API_BASE_URL)
+        .client(provideBaseOkHttpClient())
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -60,4 +95,14 @@ object NetworkModule {
     @Singleton
     fun provideAlphaVantageService(retrofit: Retrofit): AlphaVantageService =
         retrofit.create(AlphaVantageService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideMetalsApiService(): MetalsApiService =
+        provideMetalsApiRetrofit().create(MetalsApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideGoldApiService(): GoldApiService =
+        provideGoldApiRetrofit().create(GoldApiService::class.java)
 }

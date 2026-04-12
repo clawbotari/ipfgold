@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.clawbotari.ipfgold.R
 import com.github.clawbotari.ipfgold.domain.model.Currency
+import com.github.clawbotari.ipfgold.domain.model.DataSource
 import com.github.clawbotari.ipfgold.domain.model.PricePeriod
 import com.github.clawbotari.ipfgold.ui.theme.IpfGoldTheme
 
@@ -43,6 +44,10 @@ fun SettingsScreen(
     val period by viewModel.period.collectAsStateWithLifecycle(initialValue = PricePeriod.ALL)
     val theme by viewModel.theme.collectAsStateWithLifecycle(initialValue = "system")
     val refreshInterval by viewModel.refreshInterval.collectAsStateWithLifecycle(initialValue = 5)
+    val dataSource by viewModel.dataSource.collectAsStateWithLifecycle(initialValue = DataSource.ALPHA_VANTAGE)
+    val alphaVantageApiKey by viewModel.alphaVantageApiKey.collectAsStateWithLifecycle(initialValue = "")
+    val metalsApiKey by viewModel.metalsApiKey.collectAsStateWithLifecycle(initialValue = "")
+    val goldApiKey by viewModel.goldApiKey.collectAsStateWithLifecycle(initialValue = "")
 
     Scaffold { innerPadding ->
         Column(
@@ -69,6 +74,25 @@ fun SettingsScreen(
                 label = stringResource(R.string.settings_currency_eur),
                 selected = currency == Currency.EUR,
                 onClick = { viewModel.setCurrency(Currency.EUR) }
+            )
+            Divider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+
+            // Sección: Fuente de datos
+            SettingsSectionTitle(text = "Fuente de datos")
+            DataSourceOption(
+                label = "Alpha Vantage — Gratuito, 25 llamadas/día",
+                selected = dataSource == DataSource.ALPHA_VANTAGE,
+                onClick = { viewModel.setDataSource(DataSource.ALPHA_VANTAGE) }
+            )
+            DataSourceOption(
+                label = "Metals-API — Gratuito, 100 llamadas/mes",
+                selected = dataSource == DataSource.METALS_API,
+                onClick = { viewModel.setDataSource(DataSource.METALS_API) }
+            )
+            DataSourceOption(
+                label = "GoldAPI.io — Gratuito, 100 llamadas/mes",
+                selected = dataSource == DataSource.GOLD_API,
+                onClick = { viewModel.setDataSource(DataSource.GOLD_API) }
             )
             Divider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
 
@@ -217,6 +241,25 @@ private fun ThemeOption(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RefreshIntervalOption(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    ListItem(
+        headlineContent = { Text(label) },
+        trailingContent = {
+            RadioButton(
+                selected = selected,
+                onClick = onClick
+            )
+        },
+        modifier = Modifier.padding(horizontal = 8.dp)
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DataSourceOption(
     label: String,
     selected: Boolean,
     onClick: () -> Unit

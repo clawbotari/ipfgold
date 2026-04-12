@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.clawbotari.ipfgold.domain.model.Currency
+import com.github.clawbotari.ipfgold.domain.model.DataSource
 import com.github.clawbotari.ipfgold.domain.model.PricePeriod
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +32,10 @@ class SettingsViewModel @Inject constructor(
         private val KEY_PERIOD = stringPreferencesKey("period")
         private val KEY_THEME = stringPreferencesKey("theme")
         private val KEY_REFRESH_INTERVAL = intPreferencesKey("refresh_interval")
+        private val KEY_DATA_SOURCE = stringPreferencesKey("data_source")
+        private val KEY_ALPHA_VANTAGE_API_KEY = stringPreferencesKey("alpha_vantage_api_key")
+        private val KEY_METALS_API_KEY = stringPreferencesKey("metals_api_key")
+        private val KEY_GOLD_API_KEY = stringPreferencesKey("gold_api_key")
     }
 
     // Valores por defecto
@@ -38,6 +43,8 @@ class SettingsViewModel @Inject constructor(
     private val defaultPeriod = PricePeriod.ALL.name
     private val defaultTheme = "system" // "system", "light", "dark"
     private val defaultRefreshInterval = 5 // minutos
+    private val defaultDataSource = DataSource.ALPHA_VANTAGE.name
+    private val defaultApiKey = ""
 
     // Flujos de preferencias
     val currency: Flow<Currency> = dataStore.data.map { prefs ->
@@ -56,6 +63,23 @@ class SettingsViewModel @Inject constructor(
 
     val refreshInterval: Flow<Int> = dataStore.data.map { prefs ->
         prefs[KEY_REFRESH_INTERVAL] ?: defaultRefreshInterval
+    }
+
+    val dataSource: Flow<DataSource> = dataStore.data.map { prefs ->
+        val value = prefs[KEY_DATA_SOURCE] ?: defaultDataSource
+        DataSource.valueOf(value)
+    }
+
+    val alphaVantageApiKey: Flow<String> = dataStore.data.map { prefs ->
+        prefs[KEY_ALPHA_VANTAGE_API_KEY] ?: defaultApiKey
+    }
+
+    val metalsApiKey: Flow<String> = dataStore.data.map { prefs ->
+        prefs[KEY_METALS_API_KEY] ?: defaultApiKey
+    }
+
+    val goldApiKey: Flow<String> = dataStore.data.map { prefs ->
+        prefs[KEY_GOLD_API_KEY] ?: defaultApiKey
     }
 
     /**
@@ -100,6 +124,50 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             dataStore.edit { prefs ->
                 prefs[KEY_REFRESH_INTERVAL] = minutes
+            }
+        }
+    }
+
+    /**
+     * Actualiza la fuente de datos del precio del oro.
+     */
+    fun setDataSource(source: DataSource) {
+        viewModelScope.launch {
+            dataStore.edit { prefs ->
+                prefs[KEY_DATA_SOURCE] = source.name
+            }
+        }
+    }
+
+    /**
+     * Actualiza la API key de Alpha Vantage.
+     */
+    fun setAlphaVantageApiKey(apiKey: String) {
+        viewModelScope.launch {
+            dataStore.edit { prefs ->
+                prefs[KEY_ALPHA_VANTAGE_API_KEY] = apiKey
+            }
+        }
+    }
+
+    /**
+     * Actualiza la API key de Metals-API.
+     */
+    fun setMetalsApiKey(apiKey: String) {
+        viewModelScope.launch {
+            dataStore.edit { prefs ->
+                prefs[KEY_METALS_API_KEY] = apiKey
+            }
+        }
+    }
+
+    /**
+     * Actualiza la API key de GoldAPI.io.
+     */
+    fun setGoldApiKey(apiKey: String) {
+        viewModelScope.launch {
+            dataStore.edit { prefs ->
+                prefs[KEY_GOLD_API_KEY] = apiKey
             }
         }
     }
