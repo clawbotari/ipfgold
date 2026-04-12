@@ -29,8 +29,8 @@ android {
         applicationId = "com.github.clawbotari.ipfgold"
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
-        versionName = "1.3"
+        versionCode = 5
+        versionName = "1.4"
 
         // API key de Alpha Vantage (usa gradle.properties o variable de entorno)
         val secretsFile = rootProject.file("app/secrets.properties")
@@ -54,6 +54,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
         }
     }
     compileOptions {
