@@ -11,8 +11,10 @@ import androidx.lifecycle.viewModelScope
 import com.github.clawbotari.ipfgold.domain.model.Currency
 import com.github.clawbotari.ipfgold.domain.model.DataSource
 import com.github.clawbotari.ipfgold.domain.model.PricePeriod
+import com.github.clawbotari.ipfgold.BuildConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,6 +40,16 @@ class SettingsViewModel @Inject constructor(
         private val KEY_METALS_API_KEY = stringPreferencesKey("metals_api_key")
         private val KEY_GOLD_API_KEY = stringPreferencesKey("gold_api_key")
         private val KEY_DEBUG_MODE = booleanPreferencesKey("debug_mode")
+    }
+
+    init {
+        viewModelScope.launch {
+            // Inicializar Alpha Vantage API key con BuildConfig si está vacía
+            val currentKey = alphaVantageApiKey.first()
+            if (currentKey.isEmpty()) {
+                setAlphaVantageApiKey(BuildConfig.ALPHA_VANTAGE_API_KEY)
+            }
+        }
     }
 
     // Valores por defecto

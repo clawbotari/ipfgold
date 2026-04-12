@@ -3,6 +3,7 @@ package com.github.clawbotari.ipfgold.ui.settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -24,6 +25,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import com.github.clawbotari.ipfgold.R
 import com.github.clawbotari.ipfgold.domain.model.Currency
 import com.github.clawbotari.ipfgold.domain.model.DataSource
@@ -96,6 +111,31 @@ fun SettingsScreen(
                 onClick = { viewModel.setDataSource(DataSource.GOLD_API) }
             )
             Divider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+
+            // Campo de API key visible solo para la fuente seleccionada
+            when (dataSource) {
+                DataSource.ALPHA_VANTAGE -> ApiKeyField(
+                    label = "Alpha Vantage API Key",
+                    value = alphaVantageApiKey,
+                    onValueChange = { viewModel.setAlphaVantageApiKey(it) },
+                    hint = "Ej: ABC123XYZ",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+                DataSource.METALS_API -> ApiKeyField(
+                    label = "Metals-API Key",
+                    value = metalsApiKey,
+                    onValueChange = { viewModel.setMetalsApiKey(it) },
+                    hint = "Ej: abc123xyz456",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+                DataSource.GOLD_API -> ApiKeyField(
+                    label = "GoldAPI.io Key",
+                    value = goldApiKey,
+                    onValueChange = { viewModel.setGoldApiKey(it) },
+                    hint = "Ej: goldapi-xxxx",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+            }
 
             // Sección: Período del gráfico
             SettingsSectionTitle(text = stringResource(R.string.settings_period_title))
@@ -302,6 +342,38 @@ private fun DebugOption(
             )
         },
         modifier = Modifier.padding(horizontal = 8.dp)
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ApiKeyField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    hint: String,
+    modifier: Modifier = Modifier
+) {
+    var visible by remember { mutableStateOf(false) }
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label) },
+        placeholder = { Text(hint) },
+        modifier = modifier.fillMaxWidth(),
+        visualTransformation = if (visible) VisualTransformation.None
+        else PasswordVisualTransformation(),
+        trailingIcon = {
+            IconButton(onClick = { visible = !visible }) {
+                Icon(
+                    imageVector = if (visible) Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff,
+                    contentDescription = if (visible) "Ocultar key" else "Mostrar key"
+                )
+            }
+        },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
     )
 }
 
