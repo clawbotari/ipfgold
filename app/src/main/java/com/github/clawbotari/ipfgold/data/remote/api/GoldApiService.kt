@@ -17,7 +17,7 @@ interface GoldApiService {
      *
      * @param apiKey API key de GoldAPI.io (header `x-access-token`).
      */
-    @GET("price/XAU")
+    @GET("XAU/USD")
     suspend fun getGoldPrice(
         @Header("x-access-token") apiKey: String
     ): GoldApiResponse
