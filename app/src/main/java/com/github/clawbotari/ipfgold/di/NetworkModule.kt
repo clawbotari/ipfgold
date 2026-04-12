@@ -14,6 +14,7 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -26,6 +27,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @Named("alphavantage")
     fun provideAlphaVantageOkHttpClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) {
@@ -54,6 +56,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @Named("base")
     fun provideBaseOkHttpClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) {
@@ -69,40 +72,43 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAlphaVantageRetrofit(): Retrofit = Retrofit.Builder()
+    @Named("alphavantage")
+    fun provideAlphaVantageRetrofit(@Named("alphavantage") okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .baseUrl(ALPHA_VANTAGE_BASE_URL)
-        .client(provideAlphaVantageOkHttpClient())
+        .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     @Provides
     @Singleton
-    fun provideMetalsApiRetrofit(): Retrofit = Retrofit.Builder()
+    @Named("metalsapi")
+    fun provideMetalsApiRetrofit(@Named("base") okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .baseUrl(METALS_API_BASE_URL)
-        .client(provideBaseOkHttpClient())
+        .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     @Provides
     @Singleton
-    fun provideGoldApiRetrofit(): Retrofit = Retrofit.Builder()
+    @Named("goldapi")
+    fun provideGoldApiRetrofit(@Named("base") okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .baseUrl(GOLD_API_BASE_URL)
-        .client(provideBaseOkHttpClient())
+        .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     @Provides
     @Singleton
-    fun provideAlphaVantageService(retrofit: Retrofit): AlphaVantageService =
+    fun provideAlphaVantageService(@Named("alphavantage") retrofit: Retrofit): AlphaVantageService =
         retrofit.create(AlphaVantageService::class.java)
 
     @Provides
     @Singleton
-    fun provideMetalsApiService(): MetalsApiService =
-        provideMetalsApiRetrofit().create(MetalsApiService::class.java)
+    fun provideMetalsApiService(@Named("metalsapi") retrofit: Retrofit): MetalsApiService =
+        retrofit.create(MetalsApiService::class.java)
 
     @Provides
     @Singleton
-    fun provideGoldApiService(): GoldApiService =
-        provideGoldApiRetrofit().create(GoldApiService::class.java)
+    fun provideGoldApiService(@Named("goldapi") retrofit: Retrofit): GoldApiService =
+        retrofit.create(GoldApiService::class.java)
 }
