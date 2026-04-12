@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -20,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -256,69 +259,60 @@ private fun ErrorScreen(
 @Composable
 private fun DebugPanel(
     logs: List<DebugLog>,
-    onClear: () -> Unit
+    onClear: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .height(300.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 6.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Debug Logs",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                androidx.compose.material3.Button(
-                    onClick = onClear,
-                    modifier = Modifier.width(80.dp).height(36.dp)
-                ) {
-                    Text("Clear")
+                Text("Debug", style = MaterialTheme.typography.labelMedium)
+                androidx.compose.material3.TextButton(onClick = onClear) { 
+                    Text("Limpiar") 
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            if (logs.isEmpty()) {
-                Text(
-                    text = "No logs yet.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            } else {
-                Column(
-                    modifier = Modifier.verticalScroll(rememberScrollState())
-                ) {
-                    logs.forEach { log ->
-                        val time = java.time.Instant.ofEpochMilli(log.timestamp)
-                            .atZone(java.time.ZoneId.systemDefault())
-                            .toLocalTime()
-                            .format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"))
-                        val color = when (log.type) {
-                            LogType.REQUEST -> MaterialTheme.colorScheme.primary
-                            LogType.RESPONSE -> MaterialTheme.colorScheme.secondary
-                            LogType.ERROR -> MaterialTheme.colorScheme.error
-                            LogType.INFO -> MaterialTheme.colorScheme.onSurfaceVariant
-                        }
-                        Text(
-                            text = "$time [${log.type.name}] ${log.message}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = color,
-                            modifier = Modifier.padding(vertical = 2.dp)
-                        )
-                    }
+            androidx.compose.foundation.lazy.LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                reverseLayout = true
+            ) {
+                items(logs.reversed()) { log ->
+                    DebugLogItem(log)
                 }
             }
         }
     }
+}
+
+@Composable
+private fun DebugLogItem(log: DebugLog) {
+    val time = java.time.Instant.ofEpochMilli(log.timestamp)
+        .atZone(java.time.ZoneId.systemDefault())
+        .toLocalTime()
+        .format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"))
+    val color = when (log.type) {
+        LogType.REQUEST -> MaterialTheme.colorScheme.primary
+        LogType.RESPONSE -> MaterialTheme.colorScheme.secondary
+        LogType.ERROR -> MaterialTheme.colorScheme.error
+        LogType.INFO -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
+    androidx.compose.material3.Text(
+        text = "$time [${log.type.name}] ${log.message}",
+        style = MaterialTheme.typography.bodySmall,
+        color = color,
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+    )
 }
 
 @Preview(showBackground = true, device = "spec:parent=pixel_5")
