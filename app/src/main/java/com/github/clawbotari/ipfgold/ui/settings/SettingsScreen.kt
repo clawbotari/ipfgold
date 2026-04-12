@@ -48,6 +48,7 @@ fun SettingsScreen(
     val alphaVantageApiKey by viewModel.alphaVantageApiKey.collectAsStateWithLifecycle(initialValue = "")
     val metalsApiKey by viewModel.metalsApiKey.collectAsStateWithLifecycle(initialValue = "")
     val goldApiKey by viewModel.goldApiKey.collectAsStateWithLifecycle(initialValue = "")
+    val debugMode by viewModel.debugMode.collectAsStateWithLifecycle(initialValue = false)
 
     Scaffold { innerPadding ->
         Column(
@@ -166,6 +167,15 @@ fun SettingsScreen(
                 selected = refreshInterval == 60,
                 onClick = { viewModel.setRefreshInterval(60) }
             )
+            Divider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+
+            // Sección: Modo debug
+            SettingsSectionTitle(text = "Modo debug")
+            DebugOption(
+                label = "Activar panel de debug en la pantalla principal",
+                enabled = debugMode,
+                onCheckedChange = { viewModel.setDebugMode(it) }
+            )
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
@@ -270,6 +280,25 @@ private fun DataSourceOption(
             RadioButton(
                 selected = selected,
                 onClick = onClick
+            )
+        },
+        modifier = Modifier.padding(horizontal = 8.dp)
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DebugOption(
+    label: String,
+    enabled: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    ListItem(
+        headlineContent = { Text(label) },
+        trailingContent = {
+            Switch(
+                checked = enabled,
+                onCheckedChange = onCheckedChange
             )
         },
         modifier = Modifier.padding(horizontal = 8.dp)

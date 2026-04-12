@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -28,6 +30,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.clawbotari.ipfgold.utils.DebugLog
+import com.github.clawbotari.ipfgold.utils.LogType
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.foundation.layout.Row
@@ -49,7 +56,9 @@ import com.github.clawbotari.ipfgold.ui.theme.IpfGoldTheme
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle(initialValue = HomeUiState.Loading)
+    val isDebugMode by viewModel.isDebugMode.collectAsStateWithLifecycle(initialValue = false)
+    val debugLogs by viewModel.debugLogs.collectAsStateWithLifecycle(initialValue = emptyList<DebugLog>())
 
 
 
@@ -85,8 +94,11 @@ fun HomeScreen(
                         selectedPeriod = state.selectedPeriod,
                         isOffline = state.isOffline,
                         isDemo = state.isDemo,
+                        isDebugMode = isDebugMode,
+                        debugLogs = debugLogs,
                         onCurrencyToggle = viewModel::setCurrency,
                         onPeriodSelected = viewModel::setPeriod,
+                        onClearDebugLogs = { viewModel.clearDebugLogs() },
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -162,8 +174,11 @@ private fun SuccessScreen(
     selectedPeriod: com.github.clawbotari.ipfgold.domain.model.PricePeriod,
     isOffline: Boolean,
     isDemo: Boolean,
+    isDebugMode: Boolean,
+    debugLogs: List<DebugLog>,
     onCurrencyToggle: (com.github.clawbotari.ipfgold.domain.model.Currency) -> Unit,
     onPeriodSelected: (com.github.clawbotari.ipfgold.domain.model.PricePeriod) -> Unit,
+    onClearDebugLogs: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -198,6 +213,14 @@ private fun SuccessScreen(
             currency = selectedCurrency,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
+
+        // Panel de debug
+        if (isDebugMode) {
+            DebugPanel(
+                logs = debugLogs,
+                onClear = onClearDebugLogs
+            )
+        }
     }
 }
 
@@ -226,6 +249,74 @@ private fun ErrorScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
+        }
+    }
+}
+
+@Composable
+private fun DebugPanel(
+    logs: List<DebugLog>,
+    onClear: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Debug Logs",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                androidx.compose.material3.Button(
+                    onClick = onClear,
+                    modifier = Modifier.width(80.dp).height(36.dp)
+                ) {
+                    Text("Clear")
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            if (logs.isEmpty()) {
+                Text(
+                    text = "No logs yet.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState())
+                ) {
+                    logs.forEach { log ->
+                        val time = java.time.Instant.ofEpochMilli(log.timestamp)
+                            .atZone(java.time.ZoneId.systemDefault())
+                            .toLocalTime()
+                            .format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"))
+                        val color = when (log.type) {
+                            LogType.REQUEST -> MaterialTheme.colorScheme.primary
+                            LogType.RESPONSE -> MaterialTheme.colorScheme.secondary
+                            LogType.ERROR -> MaterialTheme.colorScheme.error
+                            LogType.INFO -> MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                        Text(
+                            text = "$time [${log.type.name}] ${log.message}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = color,
+                            modifier = Modifier.padding(vertical = 2.dp)
+                        )
+                    }
+                }
+            }
         }
     }
 }

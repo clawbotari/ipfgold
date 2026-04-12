@@ -29,6 +29,11 @@ interface SettingsRepository {
     val goldApiKey: Flow<String>
 
     /**
+     * Flujo del modo debug.
+     */
+    val debugMode: Flow<Boolean>
+
+    /**
      * Obtiene la fuente de datos actual (suspending).
      */
     suspend fun getDataSource(): DataSource
@@ -67,4 +72,14 @@ interface SettingsRepository {
      * Actualiza la API key de GoldAPI.io.
      */
     suspend fun setGoldApiKey(apiKey: String)
+
+    /**
+     * Obtiene el estado del modo debug (suspending).
+     */
+    suspend fun getDebugMode(): Boolean
+
+    /**
+     * Activa o desactiva el modo debug.
+     */
+    suspend fun setDebugMode(enabled: Boolean)
 }

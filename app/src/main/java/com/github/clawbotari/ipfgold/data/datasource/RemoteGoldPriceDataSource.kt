@@ -13,6 +13,8 @@ import com.github.clawbotari.ipfgold.domain.model.GoldPrice
 import com.github.clawbotari.ipfgold.domain.model.PricePeriod
 import com.github.clawbotari.ipfgold.domain.repository.DataSourceException
 import com.github.clawbotari.ipfgold.domain.repository.SettingsRepository
+import com.github.clawbotari.ipfgold.utils.DebugLogger
+import com.github.clawbotari.ipfgold.utils.LogType
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import retrofit2.HttpException
@@ -34,7 +36,8 @@ class RemoteGoldPriceDataSource @Inject constructor(
     private val metalsApiMapper: MetalsApiMapper,
     private val goldApiMapper: GoldApiMapper,
     private val chartPointMapper: ChartPointMapper,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val debugLogger: DebugLogger
 ) {
 
     companion object {
@@ -45,7 +48,9 @@ class RemoteGoldPriceDataSource @Inject constructor(
      * Obtiene el precio actual del oro desde la fuente seleccionada.
      */
     suspend fun getCurrentPrice(): GoldPrice {
-        return when (settingsRepository.getDataSource()) {
+        val dataSource = settingsRepository.getDataSource()
+        debugLogger.log(LogType.REQUEST, "[$dataSource] Fetching gold price...")
+        return when (dataSource) {
             DataSource.ALPHA_VANTAGE -> fetchFromAlphaVantage()
             DataSource.METALS_API -> fetchFromMetalsApi()
             DataSource.GOLD_API -> fetchFromGoldApi()
@@ -59,7 +64,9 @@ class RemoteGoldPriceDataSource @Inject constructor(
      * Metals-API y GoldAPI.io devuelven datos de demostración.
      */
     suspend fun getHistoricalPrices(period: PricePeriod): List<ChartPoint> {
-        return when (settingsRepository.getDataSource()) {
+        val dataSource = settingsRepository.getDataSource()
+        debugLogger.log(LogType.REQUEST, "[$dataSource] Fetching historical prices...")
+        return when (dataSource) {
             DataSource.ALPHA_VANTAGE -> fetchHistoricalFromAlphaVantage(period)
             DataSource.METALS_API -> createDemoChartPoints(period)
             DataSource.GOLD_API -> createDemoChartPoints(period)
@@ -93,11 +100,15 @@ class RemoteGoldPriceDataSource @Inject constructor(
             val quote = quoteDeferred.await()
             val exchangeRate = exchangeRateDeferred.await()
 
-            goldPriceMapper.toGoldPrice(quote, exchangeRate)
+            val price = goldPriceMapper.toGoldPrice(quote, exchangeRate)
+            debugLogger.log(LogType.RESPONSE, "[Alpha Vantage] Price: ${price.priceUSD} USD, ${price.priceEUR} EUR")
+            price
         }
     } catch (e: HttpException) {
+        debugLogger.log(LogType.ERROR, "[Alpha Vantage] HTTP error: ${e.code()} - ${e.message()}")
         throw DataSourceException("HTTP error fetching gold price from Alpha Vantage: ${e.code()}", e)
     } catch (e: Exception) {
+        debugLogger.log(LogType.ERROR, "[Alpha Vantage] Network error: ${e.javaClass.simpleName}: ${e.message}")
         throw DataSourceException(
             "Network error fetching gold price from Alpha Vantage: ${e.javaClass.simpleName}: ${e.message} | cause: ${e.cause?.message}",
             e
@@ -107,10 +118,14 @@ class RemoteGoldPriceDataSource @Inject constructor(
     private suspend fun fetchFromMetalsApi(): GoldPrice = try {
         val apiKey = settingsRepository.getMetalsApiKey()
         val response = metalsApiService.getLatestPrice(apiKey)
-        metalsApiMapper.toGoldPrice(response)
+        val price = metalsApiMapper.toGoldPrice(response)
+        debugLogger.log(LogType.RESPONSE, "[Metals-API] Price: ${price.priceUSD} USD, ${price.priceEUR} EUR")
+        price
     } catch (e: HttpException) {
+        debugLogger.log(LogType.ERROR, "[Metals-API] HTTP error: ${e.code()} - ${e.message()}")
         throw DataSourceException("HTTP error fetching gold price from Metals-API: ${e.code()}", e)
     } catch (e: Exception) {
+        debugLogger.log(LogType.ERROR, "[Metals-API] Network error: ${e.javaClass.simpleName}: ${e.message}")
         throw DataSourceException(
             "Network error fetching gold price from Metals-API: ${e.javaClass.simpleName}: ${e.message}",
             e
@@ -120,10 +135,14 @@ class RemoteGoldPriceDataSource @Inject constructor(
     private suspend fun fetchFromGoldApi(): GoldPrice = try {
         val apiKey = settingsRepository.getGoldApiKey()
         val response = goldApiService.getGoldPrice(apiKey)
-        goldApiMapper.toGoldPrice(response)
+        val price = goldApiMapper.toGoldPrice(response)
+        debugLogger.log(LogType.RESPONSE, "[GoldAPI.io] Price: ${price.priceUSD} USD, ${price.priceEUR} EUR, change: ${price.change24h} (${price.changePercent24h}%)")
+        price
     } catch (e: HttpException) {
+        debugLogger.log(LogType.ERROR, "[GoldAPI.io] HTTP error: ${e.code()} - ${e.message()}")
         throw DataSourceException("HTTP error fetching gold price from GoldAPI.io: ${e.code()}", e)
     } catch (e: Exception) {
+        debugLogger.log(LogType.ERROR, "[GoldAPI.io] Network error: ${e.javaClass.simpleName}: ${e.message}")
         throw DataSourceException(
             "Network error fetching gold price from GoldAPI.io: ${e.javaClass.simpleName}: ${e.message}",
             e
@@ -138,11 +157,15 @@ class RemoteGoldPriceDataSource @Inject constructor(
             val series = seriesDeferred.await()
             val exchangeRate = exchangeRateDeferred.await()
 
-            chartPointMapper.toChartPoints(series, exchangeRate, period)
+            val points = chartPointMapper.toChartPoints(series, exchangeRate, period)
+            debugLogger.log(LogType.RESPONSE, "[Alpha Vantage] Historical points: ${points.size} points")
+            points
         }
     } catch (e: HttpException) {
+        debugLogger.log(LogType.ERROR, "[Alpha Vantage] HTTP error fetching historical: ${e.code()} - ${e.message()}")
         throw DataSourceException("HTTP error fetching historical prices from Alpha Vantage: ${e.code()}", e)
     } catch (e: Exception) {
+        debugLogger.log(LogType.ERROR, "[Alpha Vantage] Network error fetching historical: ${e.javaClass.simpleName}: ${e.message}")
         throw DataSourceException(
             "Network error fetching historical prices from Alpha Vantage: ${e.javaClass.simpleName}: ${e.message}",
             e
@@ -153,6 +176,7 @@ class RemoteGoldPriceDataSource @Inject constructor(
      * Genera puntos históricos de demostración cuando la fuente no los proporciona.
      */
     private fun createDemoChartPoints(period: PricePeriod): List<ChartPoint> {
+        debugLogger.log(LogType.INFO, "[Demo] Generating demo chart points for period: $period")
         // Lógica simplificada de demostración (la misma que en GoldPriceRepositoryImpl)
         val points = mutableListOf<ChartPoint>()
         val today = java.time.LocalDate.now()
@@ -173,6 +197,7 @@ class RemoteGoldPriceDataSource @Inject constructor(
                 )
             )
         }
+        debugLogger.log(LogType.INFO, "[Demo] Generated ${points.size} demo points")
         return points
     }
 }

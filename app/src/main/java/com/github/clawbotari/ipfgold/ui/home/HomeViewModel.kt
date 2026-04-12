@@ -5,9 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.github.clawbotari.ipfgold.domain.model.Currency
 import com.github.clawbotari.ipfgold.domain.model.PricePeriod
 import com.github.clawbotari.ipfgold.domain.repository.GoldPriceRepository
+import com.github.clawbotari.ipfgold.domain.repository.SettingsRepository
+import com.github.clawbotari.ipfgold.utils.DebugLogger
+import com.github.clawbotari.ipfgold.utils.DebugLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,12 +28,18 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: GoldPriceRepository
+    private val repository: GoldPriceRepository,
+    private val settingsRepository: SettingsRepository,
+    private val debugLogger: DebugLogger
 ) : ViewModel() {
 
     // Estado interno mutable
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    // Flujos de debug
+    val isDebugMode: Flow<Boolean> = settingsRepository.debugMode
+    val debugLogs: StateFlow<List<DebugLog>> = debugLogger.logs
 
     // Configuración actual
     private var selectedCurrency: Currency = Currency.USD
@@ -144,6 +154,10 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun clearDebugLogs() {
+        debugLogger.clear()
     }
 
     override fun onCleared() {

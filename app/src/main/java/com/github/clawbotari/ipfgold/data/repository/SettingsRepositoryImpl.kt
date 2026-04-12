@@ -3,6 +3,7 @@ package com.github.clawbotari.ipfgold.data.repository
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.github.clawbotari.ipfgold.domain.model.DataSource
 import com.github.clawbotari.ipfgold.domain.repository.SettingsRepository
@@ -24,10 +25,12 @@ class SettingsRepositoryImpl @Inject constructor(
         private val KEY_ALPHA_VANTAGE_API_KEY = stringPreferencesKey("alpha_vantage_api_key")
         private val KEY_METALS_API_KEY = stringPreferencesKey("metals_api_key")
         private val KEY_GOLD_API_KEY = stringPreferencesKey("gold_api_key")
+        private val KEY_DEBUG_MODE = booleanPreferencesKey("debug_mode")
 
         // Valores por defecto
         private val DEFAULT_DATA_SOURCE = DataSource.ALPHA_VANTAGE.name
         private const val DEFAULT_API_KEY = ""
+        private const val DEFAULT_DEBUG_MODE = false
     }
 
     override val dataSource: Flow<DataSource> = dataStore.data.map { prefs ->
@@ -45,6 +48,10 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override val goldApiKey: Flow<String> = dataStore.data.map { prefs ->
         prefs[KEY_GOLD_API_KEY] ?: DEFAULT_API_KEY
+    }
+
+    override val debugMode: Flow<Boolean> = dataStore.data.map { prefs ->
+        prefs[KEY_DEBUG_MODE] ?: DEFAULT_DEBUG_MODE
     }
 
     override suspend fun getDataSource(): DataSource =
@@ -80,6 +87,15 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun setGoldApiKey(apiKey: String) {
         dataStore.edit { prefs ->
             prefs[KEY_GOLD_API_KEY] = apiKey
+        }
+    }
+
+    override suspend fun getDebugMode(): Boolean =
+        debugMode.first()
+
+    override suspend fun setDebugMode(enabled: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[KEY_DEBUG_MODE] = enabled
         }
     }
 }

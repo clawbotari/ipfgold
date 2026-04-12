@@ -3,6 +3,7 @@ package com.github.clawbotari.ipfgold.ui.settings
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
@@ -36,6 +37,7 @@ class SettingsViewModel @Inject constructor(
         private val KEY_ALPHA_VANTAGE_API_KEY = stringPreferencesKey("alpha_vantage_api_key")
         private val KEY_METALS_API_KEY = stringPreferencesKey("metals_api_key")
         private val KEY_GOLD_API_KEY = stringPreferencesKey("gold_api_key")
+        private val KEY_DEBUG_MODE = booleanPreferencesKey("debug_mode")
     }
 
     // Valores por defecto
@@ -45,6 +47,7 @@ class SettingsViewModel @Inject constructor(
     private val defaultRefreshInterval = 5 // minutos
     private val defaultDataSource = DataSource.ALPHA_VANTAGE.name
     private val defaultApiKey = ""
+    private val defaultDebugMode = false
 
     // Flujos de preferencias
     val currency: Flow<Currency> = dataStore.data.map { prefs ->
@@ -80,6 +83,10 @@ class SettingsViewModel @Inject constructor(
 
     val goldApiKey: Flow<String> = dataStore.data.map { prefs ->
         prefs[KEY_GOLD_API_KEY] ?: defaultApiKey
+    }
+
+    val debugMode: Flow<Boolean> = dataStore.data.map { prefs ->
+        prefs[KEY_DEBUG_MODE] ?: defaultDebugMode
     }
 
     /**
@@ -168,6 +175,17 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             dataStore.edit { prefs ->
                 prefs[KEY_GOLD_API_KEY] = apiKey
+            }
+        }
+    }
+
+    /**
+     * Activa o desactiva el modo debug.
+     */
+    fun setDebugMode(enabled: Boolean) {
+        viewModelScope.launch {
+            dataStore.edit { prefs ->
+                prefs[KEY_DEBUG_MODE] = enabled
             }
         }
     }

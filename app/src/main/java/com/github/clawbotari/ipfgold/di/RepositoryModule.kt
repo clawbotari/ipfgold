@@ -8,6 +8,7 @@ import com.github.clawbotari.ipfgold.data.remote.mapper.MetalsApiMapper
 import com.github.clawbotari.ipfgold.data.remote.mapper.GoldApiMapper
 import com.github.clawbotari.ipfgold.domain.repository.GoldPriceRepository
 import com.github.clawbotari.ipfgold.domain.repository.SettingsRepository
+import com.github.clawbotari.ipfgold.utils.DebugLogger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,4 +39,8 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideGoldApiMapper(): GoldApiMapper = GoldApiMapper()
+
+    @Provides
+    @Singleton
+    fun provideDebugLogger(): DebugLogger = DebugLogger()
 }
