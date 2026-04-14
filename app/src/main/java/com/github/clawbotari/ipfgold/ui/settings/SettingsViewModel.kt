@@ -44,10 +44,17 @@ class SettingsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            // Inicializar Alpha Vantage API key con BuildConfig si está vacía
-            val currentKey = alphaVantageApiKey.first()
-            if (currentKey.isEmpty()) {
-                setAlphaVantageApiKey(BuildConfig.ALPHA_VANTAGE_API_KEY)
+            try {
+                // Inicializar Alpha Vantage API key con BuildConfig si está vacía
+                val currentKey = alphaVantageApiKey.first()
+                if (currentKey.isEmpty()) {
+                    val apiKey = BuildConfig.ALPHA_VANTAGE_API_KEY ?: "demo"
+                    setAlphaVantageApiKey(apiKey)
+                }
+            } catch (e: Exception) {
+                // Log del error pero evitar crash
+                e.printStackTrace()
+                // Si falla, la key quedará vacía y el usuario podrá introducirla manualmente
             }
         }
     }
