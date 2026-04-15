@@ -69,7 +69,7 @@ class HomeViewModel @Inject constructor(
             try {
                 val price = repository.getCurrentPrice()
                 val chartPoints = repository.getHistoricalPrices(selectedPeriod)
-                val isDemo = price.isDemo || chartPoints.any { it.isDemo }
+                val isDemo = price.isDemo
 
                 _uiState.update {
                     HomeUiState.Success(
@@ -121,7 +121,7 @@ class HomeViewModel @Inject constructor(
                 _uiState.update { HomeUiState.Loading }
                 try {
                     val chartPoints = repository.getHistoricalPrices(period)
-                    val isDemo = current.price.isDemo || chartPoints.any { it.isDemo }
+                    val isDemo = current.price.isDemo
                     _uiState.update {
                         current.copy(
                             chartPoints = chartPoints,

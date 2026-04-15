@@ -40,6 +40,6 @@
     <!-- About -->
     <string name="about_title">Acerca de</string>
     <string name="about_version">Versión %s</string>
-    <string name="about_data_source">Los datos se obtienen de Alpha Vantage y son orientativos.</string>
+    <string name="about_data_source">Los precios mostrados provienen de fuentes externas de terceros.</string>
     <string name="about_credits">Desarrollado por IPF con ❤️ y 🦞.</string>
 </resources>

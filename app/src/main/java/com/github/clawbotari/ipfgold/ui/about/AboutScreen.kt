@@ -98,7 +98,7 @@ fun AboutScreen() {
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = "Alpha Vantage API",
+                        text = "APIs de terceros",
                         style = MaterialTheme.typography.labelMedium,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.primary
