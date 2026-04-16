@@ -29,8 +29,8 @@ android {
         applicationId = "com.github.clawbotari.ipfgold"
         minSdk = 26
         targetSdk = 35
-        versionCode = 6
-        versionName = "1.5"
+        versionCode = 7
+        versionName = "1.6"
 
         // API key de Alpha Vantage (usa gradle.properties o variable de entorno)
         val secretsFile = rootProject.file("app/secrets.properties")
